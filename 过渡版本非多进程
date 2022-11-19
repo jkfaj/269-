@@ -142,8 +142,10 @@ def data_new_url():
     data_new_url=dataframe_trans(namelist,urllist,dataurl)
     data_new_url=data_new_url.reset_index(drop=True)
     data_new_url.sort_values('人物名字',ascending=True,inplace=True)
-    data_new_url['url链接']=data_new_url['url链接'].map(lambda x:x.split(' ')[0])
     data_new_url['下载类型']=data_new_url['url链接'].map(lambda x:x.split(' ')[-1])
+   
+    data_new_url['url链接']=data_new_url['url链接'].map(lambda x:x.split(' ')[0])
+    #data_new_url['下载类型']=data_new_url['url链接'].map(lambda x:x.split(' ')[-1])
    
    
     file_make(namelist)
@@ -191,6 +193,29 @@ if __name__ == '__main__':
 
 
 
+
+#格式转换 把acc格式改成mp3
+#ffmpeg -i 002.aac -acodec libmp3lame 2.mp3
+
+import os
+#time_7=datetime.now()
+#to_trans_acc="C:\\Users\\Administrator\\Desktop\\test2\\chunks\\"
+#to_save_trans="C:\\Users\\Administrator\\Desktop\\test2\\转wav\\"
+import subprocess
+
+for num in range(0,len(namelist),1):
+
+    accfile2=chunkspath+namelist[num]+'\\'
+    #to_save_trans=wavpath+namelist[num]+'\\'
+
+    for i in os.listdir(audiofile2):
+        trans_name=to_trans_file+i
+        save_name=accfile2+os.path.splitext(i)[0]+'.mp3'
+        code='ffmpeg -y -i ' +trans_name+' -acodec libmp3lame '+save_name
+        subprocess.check_output(code,shell=True)
+print('acc转为mp3格式转换完成')
+#print('***运行阿里云代码***')
+time_8=datetime.now()
 
 
 
