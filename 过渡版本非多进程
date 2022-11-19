@@ -58,9 +58,70 @@ data_total=pd.DataFrame(data=None,columns=['编号','语音内容'])
 ziptofile='E:\\test2\\新版语音包纯净版本\\'
 ziptofile_hz='E:\\test2\\新版语音包带后缀版本\\'
 
+def single():
+
+    datam=dataurl
+    namelist=[]
+    urllist=[]
+    silencelist=[]
+    threshlist=[]
+    for i in range(0,len(datam),1):
+        if datam.loc[i,0][0:4]!='http':
+            name=datam.loc[i,0].split()
+            print(name)
+            namelist.append(name[0])
+            urllist.append(i)
+            if len(name)>1:
+                silencelist.append(int(name[1]))
+                threshlist.append(int(name[2]))
+            else:
+                silencelist.append(default_silence)
+                threshlist.append(default_thresh)
+    return namelist,urllist,silencelist,threshlist
+    
+    
 
 
-if  os.path.exists(chunkspath):
+
+def dataframe_trans(namelist,urllist,dataurl):
+#构建新的dataframe  格式的转换
+    data_new_url=pd.DataFrame(data=None,columns=['人物名字','url链接'])
+    for i in range(0,len(namelist),1):
+         if i==(len(namelist)-1):
+             data_url=dataurl[urllist[i]+1:]
+             data_url.rename(columns={0:'url链接'},inplace=True)
+             
+             data_url.loc[:,'人物名字']=namelist[i]
+             data_new_url=pd.concat([data_new_url,data_url])
+             
+         else:
+             
+             data_url=dataurl[urllist[i]+1:urllist[i+1]]
+             data_url.rename(columns={0:'url链接'},inplace=True)
+             
+             data_url.loc[:,'人物名字']=namelist[i]
+             data_new_url=pd.concat([data_new_url,data_url])
+
+
+    return data_new_url
+
+
+def file_make(namelist):
+#创建文件夹 chunks  to_split_audio 转wav
+    if len(namelist)>0:
+        for i in namelist:
+            # to_split_file=to_split_path+i+'\\'   
+            chunks_file=chunkspath+i+'\\'
+            pcm_file=wavpath+i+'\\'
+            
+            # if not os.path.exists(to_split_file):os.mkdir(to_split_file)
+            if not os.path.exists(chunks_file):os.mkdir(chunks_file)
+            if not os.path.exists(pcm_file):os.mkdir(pcm_file)
+
+
+if __name__ == '__main__':
+
+    if  os.path.exists(chunkspath):
         shutil.rmtree(chunkspath)
     if not os.path.exists(chunkspath):os.mkdir(chunkspath)
     if os.path.exists(wavpath):
