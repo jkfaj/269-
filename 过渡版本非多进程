@@ -168,7 +168,7 @@ async def main():
             corlist.append(cor)
         else:
             d = DownloaderBilibili(videos_dir=to_split_path+data_new_url.loc[i,'人物名字']+'\\',video_concurrency=5, part_concurrency=10)
-            cor= d.get_video(data_new_url.loc[i,'url链接'])
+            cor= d.get_video(data_new_url.loc[i,'url链接'],only_audio=True)
             corlist.append(cor)
 
         
@@ -181,11 +181,6 @@ if __name__ == '__main__':
 
     asyncio.run(main())
 
-
- 
-
-#第一部分代码  
-#功能：将chunks文件夹下以及转wav文件夹以及test2下mp3跟压缩包下清除
 
 
 
@@ -229,9 +224,7 @@ for i in os.listdir(audiofile):
         os.rename(audiofile+i,onewname)
         upnum+=1
 
-thread_list = []
-    
-thread_num = 8
+
 
 for i in range(100,100+onum,1):
     audioname=str(i)
