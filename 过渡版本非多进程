@@ -161,10 +161,10 @@ async def main():
 
             cor= d.get_series(data_new_url.loc[i,'url链接'],only_audio=True,hierarchy=False)
             corlist.append(cor)
-        elif if data_new_url.loc[i,'下载类型']=='up':
+        elif if data_new_url.loc[i,'下载类型'].str.contains('num'):
             d = DownloaderBilibili(videos_dir=to_split_path+data_new_url.loc[i,'人物名字']+'\\',video_concurrency=5, part_concurrency=10)
-
-            cor= d.get_up_videos(url_or_mid=data_new_url.loc[i,'url链接'].split('_')[1],only_audio=True,hierarchy=False)
+            num=data_new_url.loc[i,'下载类型'].split('=')[1]
+            cor= d.get_up_videos(url_or_mid=data_new_url.loc[i,'url链接'],num=num,only_audio=True,hierarchy=False)
             corlist.append(cor)
         else:
             d = DownloaderBilibili(videos_dir=to_split_path+data_new_url.loc[i,'人物名字']+'\\',video_concurrency=5, part_concurrency=10)
@@ -214,8 +214,9 @@ def split_audio(audiopath,chunks_path):
 audiofile = "C:\\Users\\Administrator\\Desktop\\test2\\to_split_audio\\"
 onum=0
 upnum=100
-for i in os.listdir(audiofile):
-    audiofile1=audiofile+i+'\\'
+namelist,urllist,silencelist,threshlist=single()
+for i in range(0,len(namelist),1):
+    audiofile1=to_split_path+namelist[i]+'\\'
     for j in os.listdir(audiofile1):
     #将mp3进行重命名，命名成数字，避免中文出现问题
         if  os.path.splitext(j)[-1]=='.mp3':
@@ -227,36 +228,38 @@ for i in os.listdir(audiofile):
     upnum+=1
 
 
+for i in range(0,len(namelist),1):
 
-for i in range(100,100+onum,1):
-    audioname=str(i)
-    audiopath=audiofile+audioname+'.mp3'
+    audiofile1=to_split_path+namelist[i]+'\\'
+    for j in os.listdir(audiofile1):
+        audioname=str(j)
+        audiopath=audiofile1+audioname+'.mp3'
     
 
     # print(audiopath)
-    audiotype = 'mp3' #如果wav、mp4其他格式参看pydub.AudioSegment的API
+        audiotype = 'mp3' #如果wav、mp4其他格式参看pydub.AudioSegment的API
 # 读入音频
-    print('读入音频')
-    sound = AudioSegment.from_file(audiopath, format=audiotype)
+        print('读入音频')
+        sound = AudioSegment.from_file(audiopath, format=audiotype)
 # sound = sound[:3*60*1000] #如果文件较大，先取前3分钟测试，根据测试结果，调整参数
 # 分割 
-    print('开始分割')
-    chunks = split_on_silence(sound,min_silence_len=520,silence_thresh=-30,keep_silence=800)#min_silence_len: 拆分语句时，静默满0.3秒则拆分。silence_thresh：小于-70dBFS以下的为静默。
+        print('开始分割')
+        chunks = split_on_silence(sound,min_silence_len=520,silence_thresh=-30,keep_silence=800)#min_silence_len: 拆分语句时，静默满0.3秒则拆分。silence_thresh：小于-70dBFS以下的为静默。
 # 创建保存目录
-    filepath = os.path.split(audiopath)[0]
-    chunks_path = filepath+'\\chunks\\'
+       # filepath = os.path.split(audiopath)[0]
+        chunks_path = chunkspath+namelist[i]+'\\'
    #print(chunks_path)
-    if not os.path.exists(chunks_path):os.mkdir(chunks_path)
+        if not os.path.exists(chunks_path):os.mkdir(chunks_path)
 # 保存所有分段
-    print('开始保存')
-    for i in range(len(chunks)):
-        new = chunks[i]
-        save_name = chunks_path+audioname+'%04d.%s'%(i,audiotype)
-        new.export(save_name, format=audiotype)
-        print('%04d'%i,len(new))
+        print('开始保存')
+        for i in range(len(chunks)):
+            new = chunks[i]
+            save_name = chunks_path+audioname+'%06d.%s'%(i,audiotype)
+            new.export(save_name, format=audiotype)
+            print('%06d'%i,len(new))
 
 # print('保存完毕')
-print('***运行格式转换代码***')
+    print('***运行格式转换代码***')
 time_6=datetime.now()
 
 
@@ -267,13 +270,19 @@ time_6=datetime.now()
 import os
 time_7=datetime.now()
 to_trans_file="C:\\Users\\Administrator\\Desktop\\test2\\chunks\\"
-to_save_trans="C:\\Users\\Administrator\\Desktop\\test2\\转wav\\"
+#to_save_trans="C:\\Users\\Administrator\\Desktop\\test2\\转wav\\"
 import subprocess
-for i in os.listdir(to_trans_file):
-    trans_name=to_trans_file+i
-    save_name=to_save_trans+os.path.splitext(i)[0]+'.pcm'
-    code='ffmpeg -y -i ' +trans_name+' -acodec pcm_s16le -f s16le -ac 1 -ar 16000 '+save_name
-    subprocess.check_output(code,shell=True)
+
+for num in range(0,len(namelist),1):
+
+    audiofile2=chunkspath+namelist[num]+'\\'
+    to_save_trans=wavpath+namelist[num]+'\\'
+
+    for i in os.listdir(audiofile2):
+        trans_name=to_trans_file+i
+        save_name=to_save_trans+os.path.splitext(i)[0]+'.pcm'
+        code='ffmpeg -y -i ' +trans_name+' -acodec pcm_s16le -f s16le -ac 1 -ar 16000 '+save_name
+        subprocess.check_output(code,shell=True)
 # print('pcm格式转换完成')
 print('***运行阿里云代码***')
 time_8=datetime.now()
@@ -405,9 +414,9 @@ if __name__ == "__main__":
     access_key_id = 'LTAI5tDCdQARDVh2XYMjJGLa'
     access_key_secret = 'znwuFhoqj6i9ojEwZWuPE4Hmp8anzs'
     token, expire_time = AccessToken.create_token(access_key_id, access_key_secret)
-    print('token: %s, expire time(s): %s' % (token, expire_time))
+   # print('token: %s, expire time(s): %s' % (token, expire_time))
     if expire_time:
-        print('token有效期的北京时间：%s' % (time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(expire_time))))
+       # print('token有效期的北京时间：%s' % (time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(expire_time))))
 
 
 appKey = 'gF3HRZAKLeo6uD84'
@@ -442,18 +451,24 @@ if enableVoiceDetection :
 
 data2=pd.DataFrame(data=None,columns=['编号','语音内容'])
 
-trans_wav="C:\\Users\\Administrator\\Desktop\\test2\\转wav"
+#trans_wav="C:\\Users\\Administrator\\Desktop\\test2\\转wav"
     # 测试时候在此处正确填写相关信息即可运行
 time1 = datetime.now()
-for i in os.listdir(trans_wav):
-    num=os.path.splitext(i)[0]
-    xunfei_wav=trans_wav+'\\'+i
-    audioFile = xunfei_wav
-    result= process(request, token, audioFile)
-    print(num,result)
-    dic ={'编号':num,'语音内容':result}
-    data1=pd.DataFrame(dic,index=[0])
-    data2=data2.append(data1,ignore_index=True)
+for num in range(0,len(namelist),1):
+
+    #audiofile2=chunkspath+namelist[num]+'\\'
+    to_save_trans=wavpath+namelist[num]+'\\'
+
+
+    for i in os.listdir(to_save_trans):
+        num=os.path.splitext(i)[0]
+        xunfei_wav=to_save_trans+i
+        audioFile = xunfei_wav
+        result= process(request, token, audioFile)
+        print(num,result)
+        dic ={'编号':num,'语音内容':result}
+        data1=pd.DataFrame(dic,index=[0])
+        data2=data2.append(data1,ignore_index=True)
     
 time2 = datetime.now()
 print(time2-time1)
