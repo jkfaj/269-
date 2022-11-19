@@ -110,11 +110,11 @@ def file_make(namelist):
 #创建文件夹 chunks  to_split_audio 转wav
     if len(namelist)>0:
         for i in namelist:
-            # to_split_file=to_split_path+i+'\\'   
+            to_split_file=to_split_path+i+'\\'   
             chunks_file=chunkspath+i+'\\'
             pcm_file=wavpath+i+'\\'
             
-            # if not os.path.exists(to_split_file):os.mkdir(to_split_file)
+            if not os.path.exists(to_split_file):os.mkdir(to_split_file)
             if not os.path.exists(chunks_file):os.mkdir(chunks_file)
             if not os.path.exists(pcm_file):os.mkdir(pcm_file)
 
@@ -150,26 +150,30 @@ def data_new_url():
 import asyncio
 from bilix import DownloaderBilibili
 
-
+corlist=[]
 data_new_url=data_new_url()
 
 async def main():
-    d = DownloaderBilibili(videos_dir=to_split_path,video_concurrency=5, part_concurrency=10)
+   # d = DownloaderBilibili(videos_dir=to_split_path,video_concurrency=5, part_concurrency=10)
     for i in range(0,len(data_new_url),1):
         if data_new_url.loc[i,'下载类型']=='all':
-            cor= d.get_series(data_new_url.loc[i,'url链接'])
+            d = DownloaderBilibili(videos_dir=to_split_path+data_new_url.loc[i,'人物名字']+'\\',video_concurrency=5, part_concurrency=10)
+
+            cor= d.get_series(data_new_url.loc[i,'url链接'],only_audio=True,hierarchy=False)
             corlist.append(cor)
         elif if data_new_url.loc[i,'下载类型']=='up':
+            d = DownloaderBilibili(videos_dir=to_split_path+data_new_url.loc[i,'人物名字']+'\\',video_concurrency=5, part_concurrency=10)
+
             cor= d.get_up_videos(url_or_mid=data_new_url.loc[i,'url链接'].split('_')[1])
             corlist.append(cor)
         else:
-
+            d = DownloaderBilibili(videos_dir=to_split_path+data_new_url.loc[i,'人物名字']+'\\',video_concurrency=5, part_concurrency=10)
             cor= d.get_video(data_new_url.loc[i,'url链接'])
             corlist.append(cor)
 
         
 
-    await asyncio.gather(cor1, cor2, cor3)
+    await asyncio.gather(corlist)
     await d.aclose()
 
 
@@ -178,6 +182,7 @@ if __name__ == '__main__':
     asyncio.run(main())
 
 
+    
 
 #第一部分代码  
 #功能：将chunks文件夹下以及转wav文件夹以及test2下mp3跟压缩包下清除
