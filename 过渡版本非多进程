@@ -47,14 +47,15 @@ hzcontent='（素材分享群：123593137，获取更多素材）.mp3'
 
 rootpath='C:\\Users\\Administrator\\Desktop\\test2\\'
 to_split_path=rootpath+'to_split_audio\\'
-dataurl=pd.read_csv(txtpath,header=None,sep='\n')
+#dataurl=pd.read_csv(txtpath,header=None,sep='\n')
        
 #if not os.path.exists(to_split_path):os.mkdir(to_split_path)
 chunkspath=rootpath+'chunks\\'
 wavpath=rootpath+'转wav\\'
 logpath=rootpath+'日志\\'
 txtpath='C:\\Users\\Administrator\\Desktop\\下载链接.txt'
-
+dataurl=pd.read_csv(txtpath,header=None,sep='\n')
+       
 data_total=pd.DataFrame(data=None,columns=['编号','语音内容'])
 
 ziptofile='E:\\test2\\新版语音包纯净版本\\'
