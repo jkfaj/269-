@@ -485,67 +485,85 @@ data2.to_csv(log_file,index=False,sep=' ')
 
 
 #第六部分代码
-#功能：重命名代码，将阿里云返回识别结果重新命名文件        
-import pandas as pd
-import numpy as py
-import os
-time_11=datetime.now()
-rename_file="C:\\Users\\Administrator\\Desktop\\test2\\chunks\\"
-data3=data2.groupby(data2['编号'])['语音内容'].apply(lambda x:x.str.cat(sep=''))
-import numpy as py
-no_logo=['*',':','\'','<','>','|','\\','/','?']
+#功能：重命名代码，将阿里云返回识别结果重新命名文件
+def rename_mp3(rename_file,data2):
+    
+#重新命名
+    #rename_file=chunkspath+name+'\\'
 
-for i in no_logo:
-    data3 =data3.apply(lambda x:x.replace( i,''))
-    data3=data3.apply(lambda x:x[:80] if len(x)>81 else x)
-data3=data3.dropna(axis=0,how='any')
-data3.drop(data3[data3.values==''].index,inplace=True)
-data3.drop_duplicates(keep='first',inplace=True)
-for i in os.listdir(rename_file):
-    for j in data3.index:
-        jstr=str(j)
-        jj=jstr.zfill(6)
+   # data2=data[data_total['编号'].str.contains(name)]
 
-        if os.path.splitext(i)[0]==jj:
-            old_file=rename_file+i
-#好兄弟加后缀的话放在这里，下面带#的代码就是例子，比这来
-#new_file=rename_file+data3[j]+'（素材分享群：123593137，获取更多素材）.mp3'
-            new_file=rename_file+data3[j]+'.mp3'
-            os.rename(old_file,new_file)
-# print('重命名完成')
-data2['编号']=data2['编号'].astype(str)
+    datadup=data2[data2.duplicated('语音内容',keep='False')]
+    datadup.sort_values(by=['语音内容'],inplace=True)
+    #重复值进行排序
+    datadup['排序']=1
+    dupnum=1
+    for i in range(1,len(datadup),1):
+        while datadup.loc[i,'语音内容']==datadup.loc[i-1,'语音内容']:
+            dupnum+=1
+            datadup.loc[i,'排序']=dupnum
+        datadup.loc[i,'排序']=dupnum
+    datadup['排序']=datadup['排序'].astype(str)
+    datadup['重复值']=datadup['语音内容']+datadup['排序']
+    datadup=datadup.drop(['语音内容','排序'],axis=1)
+    #data3重复数据重新命名
+    dataleft= pd.merge(left=data2,right=datadup,on='编号',how='left')   
+    for i in  range(0,len(dataleft),1):
+        if dataleft.loc[i,'重复值'].notnull():
+            dataleft.loc[i,'语音内容']=dataleft.loc[i,'重复值']+'_duplicates'
+    data2=dataleft.drop(['重复值'],axis=1)
 
-for i in os.listdir(rename_file):
-    for j in data2['编号']:
-        jstr=str(j)
-        jj=jstr.zfill(6)
+    data3=data2.groupby(data2['编号'])['语音内容'].apply(lambda x:x.str.cat(sep=''))
+    no_logo=['*',':','\'','<','>','|','\\','/','?']
 
+    for i in no_logo:
+        data3 =data3.apply(lambda x:x.replace( i,''))
+        data3=data3.apply(lambda x:x[:80] if len(x)>81 else x)
+    data3=data3.dropna(axis=0,how='any')
+    data3.drop(data3[data3.values==''].index,inplace=True)
+    #  data3.drop_duplicates(keep='first',inplace=True)
+    for i in os.listdir(rename_file):
+        for j in data3.index:
+            jstr=str(j)
+            #jj=jstr.zfill(6)
 
-        if os.path.exists(rename_file+jj+'.mp3'):
+            if os.path.splitext(i)[0]==jj:
+                old_file=rename_file+i
+               #好兄弟加后缀的话放在这里，下面带#的代码就是例子，比这来
+      #        new_file=rename_file+data3[j]+'（素材分享群：123593137，获取更多素材）.mp3'
+                new_file=rename_file+data3[j]+'.mp3'
+                os.rename(old_file,new_file)
 
-            os.remove(rename_file+jj+'.mp3')
+    data2['编号']=data2['编号'].astype(str)
 
-# print('空白语音跟重复语音已删除')
-print('***运行压缩文件代码***')
-time_12=datetime.now()
+    for i in os.listdir(rename_file):
+        for j in data2['编号']:
+            jstr=str(j)
+            # jj=jstr.zfill(6)
+            if os.path.exists(rename_file+jj+'.mp3'):
+                os.remove(rename_file+jj+'.mp3')
+def houzhui(name):
 
-
-
-
-#第七部分代码
-#功能：自动压缩成文件
-import os
-import zipfile
-
-time_13=datetime.now()
+  # 增加一个后缀版本
+    file_path=chunkspath+'\\'+name+'\\'
  
-def zipDir(source_dir, output_filename):
+    for i in os.listdir(file_path):
+        oldname=file_path+i
+        newi=os.path.splitext(i)[0]
+        newname=file_path+newi+hzcontent
+        os.rename(oldname,newname)
+                
+
+
+def zipDir(name,output_file):
     """
     压缩指定文件夹
     :param source_dir: 目标文件夹路径
     :param output_filename: 压缩文件保存路径+xxxx.zip
     :return: 无
     """
+    source_dir=chunkspath+name+'\\'
+    #output_file=chunkspath+name+'zip'
     if os.path.exists(source_dir):
         # compression压缩比例，默认是不压缩，ZIP_LZMA=14级别的压缩，影响的是时间，但是包能更小
         # vue使用级别=9的，var archive = archiver('zip', {zlib: {level: 9}});
@@ -563,11 +581,79 @@ def zipDir(source_dir, output_filename):
         zipf.close()
         return output_filename
     return
- 
+
+def movefile(name):
+
+#复制到指定位置，然后解决重名问题j要是重名了 改名
+
+
+    num=1
+
+    for j in os.listdir(chunkspath):
+        if j.endswith('_hz.zip'):
+            ziphzname=os.path.splitext(j)[0]
+        if j.endswith('语音包新版本.zip'):
+            zipname=os.path.splitext(j)[0]
+      #用后缀版本解决重命名     
+    for i in os.listdir(ziptofile):
+        
+        while os.path.splitext(i)[0]==zipname:
+            if num>1:
+                
+                zipname=zipname.split('_')[0]+'_'+str(num)
+            else:
+                num+=1
+                
+                zipname=zipname+'_'+str(num)
+
+    for i in os.listdir(ziptofile_hz):
+        while os.path.splitext(i)[0]==ziphzname:
+            if num>1:
+                
+                ziphzname=ziphzname.split('_')[0]+'_hz_'+str(num)
+            else:
+                num+=1
+                
+                ziphzname=ziphzname+'_'+str(num)
+    
+    shutil.copy(chunkspath+name+'语音包新版本.zip',ziptofile+zipname+'.zip')
+    shutil.copy(chunkspath+name+'语音包新版本_hz.zip',ziptofile_hz+ziphzname+'.zip')
  
 
-time_14=datetime.now()
-timetotal2=datetime.now()
+def re_zip_m(name):
+    rename_mp3(name)
+    zipDir(name,chunkspath+name+'语音包新版本.zip')
+    houzhui()
+    zipDir(name,chunkspath+name+'语音包新版本_hz.zip')
+   # movefile(name)
+
+#重命名
+
+for  num in range(0,len(namelist),1):
+    rename_file=chunkspath+namelist[num]
+    nums=num+100 
+    data_part=data2[data2['编号'].map(lambda x:x.split('_')[0])==nums]
+    rename_mp3(rename_file,data)
+
+#打包纯净版本
+for  num in range(0,len(namelist),1):
+    name=namelist[num]
+    zipDir(name,chunkspath+name+'语音包新版本.zip')
+
+#压缩后缀版本
+for  num in range(0,len(namelist),1):
+    name=namelist[num]
+    houzhui(name)
+    zipDir(name,chunkspath+name+'语音包新版本_hz.zip')
+
+#移动到指定位置
+for  num in range(0,len(namelist),1):
+    name=namelist[num]
+    movefile(name)
+
+ 
+print('程序运行完成') 
+
 
 
 
