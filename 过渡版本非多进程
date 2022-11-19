@@ -3,6 +3,36 @@
 
 #bat文件启动 不需要打开jupyter
 
+if  os.path.exists(chunkspath):
+        shutil.rmtree(chunkspath)
+    if not os.path.exists(chunkspath):os.mkdir(chunkspath)
+    if os.path.exists(wavpath):
+        shutil.rmtree(wavpath)
+    if not os.path.exists(wavpath):os.mkdir(wavpath)
+    if os.path.getsize(txtpath)>1:
+        #下载txt上面链接
+
+        dataurl=pd.read_csv(txtpath,header=None,sep='\n')
+        print('正在下载链接中语音')
+        dataurl
+       # remove_file(to_split_path,type='all')
+        namelist,urllist,silencelist,threshlist=single()
+        data_new_url=dataframe_trans(namelist,urllist,dataurl)
+        data_new_url=data_new_url.reset_index(drop=True)
+        data_new_url.sort_values('人物名字',ascending=True,inplace=True)
+        data_new_url.loc[:,'文件名']=1
+        for i in range(0,len(data_new_url),1):
+            data_new_url.loc[i,'文件名']=data_new_url.loc[i,'人物名字']+'_'+str(i)
+        #data_new_url需要再处理有问题
+        #data_new_url['silence']
+        #data_new_url['thresh']
+        print(data_new_url)
+        print(namelist)
+        print(silencelist)
+        print(threshlist)
+        print(urllist)
+        file_make(namelist)
+
 
 
 """
