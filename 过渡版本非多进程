@@ -2,6 +2,63 @@
 #重命名 文件名带有路径 
 
 #bat文件启动 不需要打开jupyter
+from datetime import datetime
+import os
+import glob 
+import base64
+import hashlib
+import hmac
+import requests
+import time
+import uuid
+from urllib import parse
+import pandas as pd
+import http.client
+import json
+from pydub import AudioSegment
+from pydub.silence import split_on_silence
+import threading
+import you_get
+import numpy as np
+import subprocess
+import zipfile
+import shutil
+import multiprocessing
+import requests
+import re
+import json
+from lxml import etree
+from concurrent.futures import ThreadPoolExecutor
+
+'''多人多链接
+   将压缩包移动到指定文件夹，如果之前文件夹有重名，处理方式
+   b站如果是一个列表应该怎么下载，或者备注
+   多参数问题
+'''
+'''
+全局变量声明
+'''
+default_silence=630
+default_thresh=-30
+
+#改后缀的地方
+hzcontent='（素材分享群：123593137，获取更多素材）.mp3'
+       
+
+rootpath='C:\\Users\\Administrator\\Desktop\\test2\\'
+to_split_path=rootpath+'to_split_audio\\'
+if not os.path.exists(to_split_path):os.mkdir(to_split_path)
+chunkspath=rootpath+'chunks\\'
+wavpath=rootpath+'转wav\\'
+logpath=rootpath+'日志\\'
+txtpath='C:\\Users\\Administrator\\Desktop\\下载链接.txt'
+
+data_total=pd.DataFrame(data=None,columns=['编号','语音内容'])
+
+ziptofile='E:\\test2\\新版语音包纯净版本\\'
+ziptofile_hz='E:\\test2\\新版语音包带后缀版本\\'
+
+
 
 if  os.path.exists(chunkspath):
         shutil.rmtree(chunkspath)
