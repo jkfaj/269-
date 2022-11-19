@@ -118,8 +118,8 @@ def file_make(namelist):
             if not os.path.exists(chunks_file):os.mkdir(chunks_file)
             if not os.path.exists(pcm_file):os.mkdir(pcm_file)
 
+def data_new_url():
 
-if __name__ == '__main__':
 
     if  os.path.exists(chunkspath):
         shutil.rmtree(chunkspath)
@@ -127,29 +127,20 @@ if __name__ == '__main__':
     if os.path.exists(wavpath):
         shutil.rmtree(wavpath)
     if not os.path.exists(wavpath):os.mkdir(wavpath)
-    if os.path.getsize(txtpath)>1:
-        #下载txt上面链接
-
-        dataurl=pd.read_csv(txtpath,header=None,sep='\n')
-        print('正在下载链接中语音')
-        dataurl
+    
+    dataurl=pd.read_csv(txtpath,header=None,sep='\n')
+  
        # remove_file(to_split_path,type='all')
-        namelist,urllist,silencelist,threshlist=single()
-        data_new_url=dataframe_trans(namelist,urllist,dataurl)
-        data_new_url=data_new_url.reset_index(drop=True)
-        data_new_url.sort_values('人物名字',ascending=True,inplace=True)
-        data_new_url.loc[:,'文件名']=1
-        for i in range(0,len(data_new_url),1):
-            data_new_url.loc[i,'文件名']=data_new_url.loc[i,'人物名字']+'_'+str(i)
-        #data_new_url需要再处理有问题
-        #data_new_url['silence']
-        #data_new_url['thresh']
-        print(data_new_url)
-        print(namelist)
-        print(silencelist)
-        print(threshlist)
-        print(urllist)
-        file_make(namelist)
+    namelist,urllist,silencelist,threshlist=single()
+    data_new_url=dataframe_trans(namelist,urllist,dataurl)
+    data_new_url=data_new_url.reset_index(drop=True)
+    data_new_url.sort_values('人物名字',ascending=True,inplace=True)
+    data_new_url['url链接']=data_new_url['url链接'].map(lambda x:x.split(' ')[0])
+    data_new_url['下载类型']=data_new_url['url下载类型'].map(lambda x:x.split(' ')[1])
+   
+   
+    file_make(namelist)
+    return data_new_url
 
 
 
@@ -160,13 +151,24 @@ import asyncio
 from bilix import DownloaderBilibili
 
 
+data_new_url=data_new_url()
+
 async def main():
     d = DownloaderBilibili(video_concurrency=5, part_concurrency=10)
-    cor1 = d.get_series(
-        'https://www.bilibili.com/bangumi/play/ss28277?spm_id_from=333.337.0.0'
-        , quality=999)
-    cor2 = d.get_up_videos(url_or_mid='436482484', quality=999)
-    cor3 = d.get_video('https://www.bilibili.com/bangumi/play/ep477122?from_spmid=666.4.0.0', quality=999)
+    for i in range(0,len(data_new_url),1):
+        if data_new_url.loc[i,'下载类型']=='all':
+            cor= d.get_series(data_new_url.loc[i,'url链接'])
+            corlist.append(cor)
+        elif if data_new_url.loc[i,'下载类型']=='up':
+            cor= d.get_up_videos(url_or_mid=data_new_url.loc[i,'url链接'].split('_')[1])
+            corlist.append(cor)
+        else:
+
+            cor= d.get_video(data_new_url.loc[i,'url链接'])
+            corlist.append(cor)
+
+        
+
     await asyncio.gather(cor1, cor2, cor3)
     await d.aclose()
 
@@ -179,23 +181,6 @@ if __name__ == '__main__':
 
 #第一部分代码  
 #功能：将chunks文件夹下以及转wav文件夹以及test2下mp3跟压缩包下清除
-from datetime import datetime
-import os
-import glob 
-
-timetotal1=datetime.now()
-
-time_1=datetime.now()
-for file in glob.glob("C:\\Users\\Administrator\\Desktop\\test2\\chunks\\*"):
-    os.remove(file)
-# print('———chunks目录下文件删除完成———')
-for file in glob.glob("C:\\Users\\Administrator\\Desktop\\test2\\转wav\\*"):
-    os.remove(file)
-# print('———转wav目录下文件删除完成———')
-
-print('***运行下载代码***')
-time_2=datetime.now()
-
 
 
 
