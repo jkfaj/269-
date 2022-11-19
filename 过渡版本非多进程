@@ -47,6 +47,8 @@ hzcontent='（素材分享群：123593137，获取更多素材）.mp3'
 
 rootpath='C:\\Users\\Administrator\\Desktop\\test2\\'
 to_split_path=rootpath+'to_split_audio\\'
+dataurl=pd.read_csv(txtpath,header=None,sep='\n')
+       
 #if not os.path.exists(to_split_path):os.mkdir(to_split_path)
 chunkspath=rootpath+'chunks\\'
 wavpath=rootpath+'转wav\\'
