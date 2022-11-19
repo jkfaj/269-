@@ -211,18 +211,20 @@ def split_audio(audiopath,chunks_path):
         new.export(save_name, format=audiotype)
 
 # 初始化
-audiofile = "C:\\Users\\Administrator\\Desktop\\test2\\"
+audiofile = "C:\\Users\\Administrator\\Desktop\\test2\\to_split_audio\\"
 onum=0
 upnum=100
 for i in os.listdir(audiofile):
+    audiofile1=audiofile+i+'\\'
+    for j in os.listdir(audiofile1):
     #将mp3进行重命名，命名成数字，避免中文出现问题
-    if  os.path.splitext(i)[-1]=='.mp3':
+        if  os.path.splitext(j)[-1]=='.mp3':
         
-        onum+=1
-        onewname=audiofile+str(upnum)+'.mp3'
+            onum+=1
+            onewname=audiofile1+str(upnum)+'_'+str(onum)+'.mp3'
         
-        os.rename(audiofile+i,onewname)
-        upnum+=1
+            os.rename(audiofile1+j,onewname)
+    upnum+=1
 
 
 
