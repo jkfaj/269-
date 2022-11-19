@@ -143,7 +143,7 @@ def data_new_url():
     data_new_url=data_new_url.reset_index(drop=True)
     data_new_url.sort_values('人物名字',ascending=True,inplace=True)
     data_new_url['url链接']=data_new_url['url链接'].map(lambda x:x.split(' ')[0])
-    data_new_url['下载类型']=data_new_url['url下载类型'].map(lambda x:x.split(' ')[1])
+    data_new_url['下载类型']=data_new_url['url链接'].map(lambda x:x.split(' ')[1])
    
    
     file_make(namelist)
