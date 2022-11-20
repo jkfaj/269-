@@ -234,7 +234,7 @@ namelist,urllist,silencelist,threshlist=single()
 
 for num in range(0,len(namelist),1):
 
-    accfile2=chunkspath+namelist[num]+'\\'
+    accfile2=to_split_path+namelist[num]+'\\'
     #to_save_trans=wavpath+namelist[num]+'\\'
 
     for i in os.listdir(accfile2):
