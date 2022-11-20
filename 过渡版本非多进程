@@ -206,6 +206,9 @@ import os
 #to_save_trans="C:\\Users\\Administrator\\Desktop\\test2\\转wav\\"
 import subprocess
 
+namelist,urllist,silencelist,threshlist=single()
+    
+
 for num in range(0,len(namelist),1):
 
     accfile2=chunkspath+namelist[num]+'\\'
