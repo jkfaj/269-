@@ -28,6 +28,7 @@ import multiprocessing
 import requests
 import re
 import json
+from datetime import datetime
 from lxml import etree
 from concurrent.futures import ThreadPoolExecutor
 
@@ -189,10 +190,14 @@ async def main():
 
 
 if __name__ == '__main__':
+    time_d1=datetime.now()
 
-    #asyncio.run(main())
+    asyncio.run(main())
+    time_d2=datetime.now()
+    print('下载花费时间',time_d2-time_d1)
+
     #await main()
-    main()
+    # main()
 
 
 
@@ -215,10 +220,10 @@ for num in range(0,len(namelist),1):
     #to_save_trans=wavpath+namelist[num]+'\\'
 
     for i in os.listdir(accfile2):
-        trans_name=to_trans_file+i
+        trans_name=accfile2+i
         save_name=accfile2+os.path.splitext(i)[0]+'.mp3'
-        code='ffmpeg -y -i ' +trans_name+' -acodec libmp3lame '+save_name
-        subprocess.check_output(code,shell=True)
+        code='ffmpeg  -i ' +trans_name+' -acodec libmp3lame '+save_name
+        os.system(code)
 print('acc转为mp3格式转换完成')
 #print('***运行阿里云代码***')
 time_8=datetime.now()
@@ -674,7 +679,7 @@ for  num in range(0,len(namelist),1):
     rename_file=chunkspath+namelist[num]
     nums=num+100 
     data_part=data2[data2['编号'].map(lambda x:x.split('_')[0])==nums]
-    rename_mp3(rename_file,data)
+    rename_mp3(rename_file,data_part)
 
 #打包纯净版本
 for  num in range(0,len(namelist),1):
