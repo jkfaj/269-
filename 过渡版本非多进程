@@ -186,7 +186,7 @@ async def main():
         
 
     await asyncio.gather(*corlist)
-    await d.aclose()
+    #await d.aclose()
 
 
 if __name__ == '__main__':
