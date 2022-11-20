@@ -201,6 +201,22 @@ if __name__ == '__main__':
     #await main()
     #main()
 
+# 重命名
+import os
+
+namelist,urllist,silencelist,threshlist=single()
+
+aac_s=100
+aac_num=0    
+
+for num in range(0,len(namelist),1):
+    for aac in os.listdir(to_split_path+namelist[num]):
+        old_aac=  to_split_path+namelist[num]+'\\'+ aac 
+        new_aac=to_split_path+namelist[num]+'\\'+ str(aac_s)+'_'+str(aac_num)+'.aac'
+        os.rename(old_aac,new_aac)
+        aac_num+=1
+    aac_s+=1
+
 
 
 
@@ -223,7 +239,9 @@ for num in range(0,len(namelist),1):
 
     for i in os.listdir(accfile2):
         trans_name=accfile2+i
+        print(trans_name)
         save_name=accfile2+os.path.splitext(i)[0]+'.mp3'
+        print(save_name)
         code='ffmpeg  -i ' +trans_name+' -acodec libmp3lame '+save_name
         os.system(code)
 print('acc转为mp3格式转换完成')
