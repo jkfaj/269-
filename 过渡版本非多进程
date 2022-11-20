@@ -63,6 +63,21 @@ data_total=pd.DataFrame(data=None,columns=['编号','语音内容'])
 ziptofile='E:\\test2\\新版语音包纯净版本\\'
 ziptofile_hz='E:\\test2\\新版语音包带后缀版本\\'
 
+
+#删除之前留下的文件
+if  os.path.exists(chunkspath):
+    shutil.rmtree(chunkspath)
+if not os.path.exists(chunkspath):os.mkdir(chunkspath)
+
+if  os.path.exists(to_split_path):
+    shutil.rmtree(to_split_path)
+if not os.path.exists(to_split_path):os.mkdir(to_split_path)
+
+if os.path.exists(wavpath):
+    shutil.rmtree(wavpath)
+if not os.path.exists(wavpath):os.mkdir(wavpath)
+    
+
 def single():
 
     datam=dataurl
