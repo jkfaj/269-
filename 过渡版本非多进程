@@ -192,12 +192,14 @@ async def main():
 if __name__ == '__main__':
     time_d1=datetime.now()
 
-    asyncio.run(main())
+    # asyncio.run(main())
+    main()
+
     time_d2=datetime.now()
     print('下载花费时间',time_d2-time_d1)
 
     #await main()
-    # main()
+    #main()
 
 
 
