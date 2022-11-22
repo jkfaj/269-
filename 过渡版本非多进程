@@ -34,7 +34,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 '''多人多链接
    将压缩包移动到指定文件夹，如果之前文件夹有重名，处理方式
-   b站如果是一个列表应该怎么下载，或者备注
+    b站如果是一个列表应该怎么下载，或者备注
    多参数问题
 '''
 '''
