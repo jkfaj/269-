@@ -253,13 +253,20 @@ for num in range(0,len(namelist),1):
     #to_save_trans=wavpath+namelist[num]+'\\'
 
     for i in os.listdir(accfile2):
-        trans_name=accfile2+i
-        print(trans_name)
-        save_name=accfile2+os.path.splitext(i)[0]+'.mp3'
-        print(save_name)
-        code='ffmpeg  -i ' +trans_name+' -acodec libmp3lame '+save_name
-        os.system(code)
+        if i.endswith('.aac'):
+            trans_name=accfile2+i
+            print(trans_name)
+            save_name=accfile2+os.path.splitext(i)[0]+'.mp3'
+            print(save_name)
+            code='ffmpeg  -i ' +trans_name+' -acodec libmp3lame '+save_name
+            os.system(code)
+            #删除aac
+            os.remove(trans_name)
 print('acc转为mp3格式转换完成')
+
+#删除acc文件
+
+
 #print('***运行阿里云代码***')
 time_8=datetime.now()
 
@@ -291,21 +298,8 @@ def split_audio(audiopath,chunks_path):
 
 # 初始化
 audiofile = "C:\\Users\\Administrator\\Desktop\\test2\\to_split_audio\\"
-onum=0
-upnum=100
-namelist,urllist,silencelist,threshlist=single()
-for i in range(0,len(namelist),1):
-    audiofile1=to_split_path+namelist[i]+'\\'
-    for j in os.listdir(audiofile1):
-    #将mp3进行重命名，命名成数字，避免中文出现问题
-        if  os.path.splitext(j)[-1]=='.mp3':
-        
-            onum+=1
-            onewname=audiofile1+str(upnum)+'_'+str(onum)+'.mp3'
-        
-            os.rename(audiofile1+j,onewname)
-    upnum+=1
 
+namelist,urllist,silencelist,threshlist=single()
 
 for i in range(0,len(namelist),1):
 
