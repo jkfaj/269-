@@ -34,7 +34,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 '''多人多链接
    将压缩包移动到指定文件夹，如果之前文件夹有重名，处理方式
-    b站如果是一个列表应该怎么下载，或者备注
+   b站如果是一个列表应该怎么下载，或者备注
    多参数问题
 '''
 '''
@@ -305,8 +305,8 @@ for i in range(0,len(namelist),1):
 
     audiofile1=to_split_path+namelist[i]+'\\'
     for j in os.listdir(audiofile1):
-        audioname=str(j)
-        audiopath=audiofile1+audioname+'.mp3'
+        
+        audiopath=audiofile1+j
     
 
     # print(audiopath)
