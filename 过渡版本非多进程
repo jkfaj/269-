@@ -320,7 +320,7 @@ for i in range(0,len(namelist),1):
         chunks = split_on_silence(sound,min_silence_len=520,silence_thresh=-30,keep_silence=800)#min_silence_len: 拆分语句时，静默满0.3秒则拆分。silence_thresh：小于-70dBFS以下的为静默。
 # 创建保存目录
        # filepath = os.path.split(audiopath)[0]
-        print(namelist[i])
+        print(i)
         chunks_path = chunkspath+namelist[i]+'\\'
    #print(chunks_path)
         if not os.path.exists(chunks_path):os.mkdir(chunks_path)
