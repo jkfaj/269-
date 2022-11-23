@@ -331,7 +331,7 @@ for i in range(0,len(namelist),1):
         print('开始保存')
         for i in range(len(chunks)):
             new = chunks[i]
-            save_name = chunks_path+audioname+'%06d.%s'%(i,audiotype)
+            save_name = chunks_path+os.path.splitext(audioname)[0]+'%06d.%s'%(i,audiotype)
             new.export(save_name, format=audiotype)
             print('%06d'%i,len(new))
 
