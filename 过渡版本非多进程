@@ -346,7 +346,7 @@ time_6=datetime.now()
 #功能：将已经切分好的语音转换为阿里云平台可识别的指定格式
 import os
 time_7=datetime.now()
-to_trans_file="C:\\Users\\Administrator\\Desktop\\test2\\chunks\\"
+#to_trans_file="C:\\Users\\Administrator\\Desktop\\test2\\chunks\\"
 #to_save_trans="C:\\Users\\Administrator\\Desktop\\test2\\转wav\\"
 import subprocess
 
@@ -356,7 +356,7 @@ for num in range(0,len(namelist),1):
     to_save_trans=wavpath+namelist[num]+'\\'
 
     for i in os.listdir(audiofile2):
-        trans_name=to_trans_file+i
+        trans_name=audiofile2+i
         save_name=to_save_trans+os.path.splitext(i)[0]+'.pcm'
         code='ffmpeg -y -i ' +trans_name+' -acodec pcm_s16le -f s16le -ac 1 -ar 16000 '+save_name
         os.system(code)
