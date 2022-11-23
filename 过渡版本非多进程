@@ -635,7 +635,7 @@ def houzhui(name):
                 
 
 
-def zipDir(name,output_file):
+def zipDir(source_dir,output_filename):
     """
     压缩指定文件夹
     :param source_dir: 目标文件夹路径
