@@ -662,7 +662,7 @@ def zipDir(source_dir,output_filename):
         return output_filename
     return
 
-def movefile(name):
+def movefile(name,ishz=False):
 
 #复制到指定位置，然后解决重名问题j要是重名了 改名
 
@@ -720,6 +720,8 @@ for  num in range(0,len(namelist),1):
 for  num in range(0,len(namelist),1):
     name=namelist[num]
     zipDir(name,chunkspath+name+'语音包新版本.zip')
+    #在e盘打压一个就不用再移动了
+
 
 #压缩后缀版本
 for  num in range(0,len(namelist),1):
@@ -728,9 +730,9 @@ for  num in range(0,len(namelist),1):
     zipDir(name,chunkspath+name+'语音包新版本_hz.zip')
 
 #移动到指定位置
-for  num in range(0,len(namelist),1):
-    name=namelist[num]
-    movefile(name)
+#for  num in range(0,len(namelist),1):
+   # name=namelist[num]
+   # movefile(name)
 
  
 print('程序运行完成') 
