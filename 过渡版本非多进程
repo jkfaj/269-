@@ -320,7 +320,7 @@ for i in range(0,len(namelist),1):
 # sound = sound[:3*60*1000] #如果文件较大，先取前3分钟测试，根据测试结果，调整参数
 # 分割 
         print('开始分割')
-        chunks = split_on_silence(sound,min_silence_len=520,silence_thresh=-30,keep_silence=800)#min_silence_len: 拆分语句时，静默满0.3秒则拆分。silence_thresh：小于-70dBFS以下的为静默。
+        chunks = split_on_silence(sound,min_silence_len=silencelist[i],silence_thresh=threshlist[i],keep_silence=800)#min_silence_len: 拆分语句时，静默满0.3秒则拆分。silence_thresh：小于-70dBFS以下的为静默。
 # 创建保存目录
        # filepath = os.path.split(audiopath)[0]
        # print(i)
@@ -710,9 +710,10 @@ def re_zip_m(name):
 #重命名
 
 for  num in range(0,len(namelist),1):
-    rename_file=chunkspath+namelist[num]
-    nums=num+100 
-    data_part=data2[data2['编号'].map(lambda x:x.split('_')[0])==nums]
+    rename_file=chunkspath+namelist[num]+'\\'
+    nums=num+100
+    data2['name_num']= data2['编号'].map(lambda x:x.split('_')[0])
+    data_part=data2[data2['name_num']==nums]
     rename_mp3(rename_file,data_part)
 
 #打包纯净版本
