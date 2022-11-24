@@ -604,7 +604,7 @@ def rename_mp3(rename_file,data2):
     #  data3.drop_duplicates(keep='first',inplace=True)
     for i in os.listdir(rename_file):
         for j in data3.index:
-            jstr=str(j)
+            jj=str(j)
             #jj=jstr.zfill(6)
 
             if os.path.splitext(i)[0]==jj:
@@ -618,7 +618,7 @@ def rename_mp3(rename_file,data2):
 
     for i in os.listdir(rename_file):
         for j in data2['编号']:
-            jstr=str(j)
+            jj=str(j)
             # jj=jstr.zfill(6)
             if os.path.exists(rename_file+jj+'.mp3'):
                 os.remove(rename_file+jj+'.mp3')
@@ -714,6 +714,7 @@ for  num in range(0,len(namelist),1):
     nums=num+100
     data2['name_num']= data2['编号'].map(lambda x:x.split('_')[0])
     data_part=data2[data2['name_num']==nums]
+    data_part=data_part.drop(['name_num'],axis=1)
     rename_mp3(rename_file,data_part)
 
 #打包纯净版本
