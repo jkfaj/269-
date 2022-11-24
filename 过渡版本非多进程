@@ -725,7 +725,7 @@ for  num in range(0,len(namelist),1):
     ename=ziptofile+namelist[num]+'语音包新版本.zip'
     enum=2
     while os.path.isfile(ename):
-        ename=ziptofile+namelist[num]+'语音包新版本_'+enum+'.zip'
+        ename=ziptofile+namelist[num]+'语音包新版本_'+str(enum)+'.zip'
         enum+=1
     
     zipDir(name,ename)
@@ -739,7 +739,7 @@ for  num in range(0,len(namelist),1):
     ename=ziptofile_hz+namelist[num]+'语音包新版本_hz.zip'
     enum=2
     while os.path.isfile(ename):
-        ename=ziptofile_hz+namelist[num]+'语音包新版本_hz'+enum+'.zip'
+        ename=ziptofile_hz+namelist[num]+'语音包新版本_hz'+str(enum)+'.zip'
         enum+=1
     
     zipDir(name,ename)
