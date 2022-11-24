@@ -721,7 +721,7 @@ for  num in range(0,len(namelist),1):
     datadup.sort_values(by=['语音内容'],inplace=True)
     #重复值进行排序
     datadup['排序']=1
-    print(dataup)
+    print(datadup)
     dupnum=1
     for i in range(1,len(datadup),1):
         while datadup.loc[i,'语音内容']==datadup.loc[i-1,'语音内容']:
