@@ -573,7 +573,7 @@ def rename_mp3(rename_file,data2):
 
    # data2=data[data_total['编号'].str.contains(name)]
 
-    datadup=data2[data2.duplicated('语音内容',keep='False')]
+    datadup=data2[data2.duplicated('语音内容',keep=False)]
     datadup.sort_values(by=['语音内容'],inplace=True)
     #重复值进行排序
     datadup['排序']=1
@@ -711,7 +711,7 @@ def re_zip_m(name):
 
 for  num in range(0,len(namelist),1):
     rename_file=chunkspath+namelist[num]+'\\'
-    nums=str(num+100)
+    nums=str(num+100
     data2['name_num']= data2['编号'].map(lambda x:x.split('_')[0])
     data_part=data2[data2['name_num']==nums]
     data_part=data_part.drop(['name_num'],axis=1)
