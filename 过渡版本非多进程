@@ -588,9 +588,10 @@ def rename_mp3(rename_file,data2):
     datadup=datadup.drop(['语音内容','排序'],axis=1)
     #data3重复数据重新命名
     dataleft= pd.merge(left=data2,right=datadup,on='编号',how='left')   
-    for i in  range(0,len(dataleft),1):
-        if dataleft.loc[i,'重复值'].notnull():
-            dataleft.loc[i,'语音内容']=dataleft.loc[i,'重复值']+'_duplicates'
+    dataleft['语音内容']=dataleft[dataleft['重复值'].notnull()]['语音内容'].apply(lambda x:x+'_duplicates')
+    #for i in  range(0,len(dataleft),1):
+        #if dataleft['重复值'].notnull():
+           # dataleft.loc[i,'语音内容']=dataleft.loc[i,'重复值']+'_duplicates'
     data2=dataleft.drop(['重复值'],axis=1)
 
     data3=data2.groupby(data2['编号'])['语音内容'].apply(lambda x:x.str.cat(sep=''))
