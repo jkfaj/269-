@@ -716,7 +716,53 @@ for  num in range(0,len(namelist),1):
     data2['name_num']= data2['编号'].map(lambda x:x.split('_')[0])
     data_part=data2[data2['name_num']==nums]
     data_part=data_part.drop(['name_num'],axis=1)
-    rename_mp3(rename_file,data_part)
+    #rename_mp3(rename_file,data_part)
+    datadup=data_part[data_part.duplicated('语音内容',keep=False)]
+    datadup.sort_values(by=['语音内容'],inplace=True)
+    #重复值进行排序
+    datadup['排序']=1
+    print(dataup)
+    dupnum=1
+    for i in range(1,len(datadup),1):
+        while datadup.loc[i,'语音内容']==datadup.loc[i-1,'语音内容']:
+            dupnum+=1
+            datadup.loc[i,'排序']=dupnum
+        datadup.loc[i,'排序']=dupnum
+    datadup['排序']=datadup['排序'].astype(str)
+    datadup['重复值']=datadup['语音内容']+datadup['排序']
+    datadup=datadup.drop(['语音内容','排序'],axis=1)
+    #data3重复数据重新命名
+    dataleft= pd.merge(left=data2,right=datadup,on='编号',how='left')   
+    dataleft['语音内容']=dataleft[dataleft['重复值'].notnull()]['语音内容'].apply(lambda x:x+'_duplicates')
+    print(dataleft)
+    #for i in  range(0,len(dataleft),1):
+        #if dataleft['重复值'].notnull():
+           # dataleft.loc[i,'语音内容']=dataleft.loc[i,'重复值']+'_duplicates'
+    data4=dataleft.drop(['重复值'],axis=1)
+
+    data3=data4.groupby(data4['编号'])['语音内容'].apply(lambda x:x.str.cat(sep=''))
+    no_logo=['*',':','\'','<','>','|','\\','/','?']
+
+    for i in no_logo:
+        data3 =data3.apply(lambda x:x.replace( i,''))
+        data3=data3.apply(lambda x:x[:80] if len(x)>81 else x)
+    data3=data3.dropna(axis=0,how='any')
+    data3.drop(data3[data3.values==''].index,inplace=True)
+    print(data3)
+    #  data3.drop_duplicates(keep='first',inplace=True)
+    for i in os.listdir(rename_file):
+        for j in data3.index:
+            jj=str(j)
+            print(jj)
+            #jj=jstr.zfill(6)
+
+            if os.path.splitext(i)[0]==jj:
+                old_file=rename_file+i
+               #好兄弟加后缀的话放在这里，下面带#的代码就是例子，比这来
+      #        new_file=rename_file+data3[j]+'（素材分享群：123593137，获取更多素材）.mp3'
+                new_file=rename_file+data3[j]+'.mp3'
+                os.rename(old_file,new_file)
+
 
 #打包纯净版本
 for  num in range(0,len(namelist),1):
