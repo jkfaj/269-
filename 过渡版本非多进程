@@ -711,7 +711,7 @@ def re_zip_m(name):
 
 for  num in range(0,len(namelist),1):
     rename_file=chunkspath+namelist[num]+'\\'
-    nums=num+100
+    nums=str(num+100)
     data2['name_num']= data2['编号'].map(lambda x:x.split('_')[0])
     data_part=data2[data2['name_num']==nums]
     data_part=data_part.drop(['name_num'],axis=1)
@@ -725,7 +725,7 @@ for  num in range(0,len(namelist),1):
     ename=ziptofile+namelist[num]+'语音包新版本.zip'
     enum=2
     while os.path.isfile(ename):
-        ename=ziptofile+namelist[num]+'语音包新版本_'+str(enum)+'.zip'
+        ename=ziptofile+namelist[num]+'语音包新版本_'+enum+'.zip'
         enum+=1
     
     zipDir(name,ename)
